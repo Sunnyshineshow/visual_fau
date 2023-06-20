@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <title>Main Page</title>
+  </head>
+  <body>
+    <div id="internet_cover" style="display: none">
+      <div
+        style="
+          margin: 20px;
+          display: block;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-3" style="text-align: center">
+              <div class="card">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card-body" id="image_size_select">Sth here</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div
+                      class="card-body"
+                      id="x_select"
+                      style="
+                        padding: 0px;
+                        margin-left: 10px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      <div id="x_axis_select_div"></div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div
+                      class="card-body"
+                      id="y_select"
+                      style="
+                        padding: 0px;
+                        margin-right: 10px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      <div id="y_axis_select_div"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div class="card">
+                <div class="card-body">
+                  <div
+                    id="parameter_area"
+                    style="
+                      text-align: left;
+                      justify-content: left;
+                      overflow-y: scroll;
+                      height: 350px;
+                    "
+                  >
+                    <button
+                      class="btn btn-outline-dark"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseExample"
+                      aria-expanded="false"
+                      aria-controls="collapseExample"
+                    >
+                      Parameter_Name
+                    </button>
+
+                    <div class="collapse" id="collapseExample">
+                      <br />
+                      <div class="card card-body">
+                        <div class="row">
+                          <div class="col">
+                            <input
+                              type="checkbox"
+                              id="Test"
+                              name="cb_class3"
+                              value="Test"
+                              style="text-align: left; justify-content: left"
+                              checked
+                            />
+                            <label for="Test">Test</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div style="justify-content: left; text-align: left">
+                <button class="btn btn-primary" onclick="applyGraphFilter()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-check-lg"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"
+                    />
+                  </svg>
+                  Apply Filter
+                </button>
+                <button
+                  id="revert_button"
+                  type="button"
+                  class="btn btn-danger"
+                  onclick="revert_single_lined()"
+                  style="opacity: 0"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-arrow-clockwise"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                    />
+                    <path
+                      d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                    />
+                  </svg>
+                  Revert Graph
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div
+                style="margin: 10px; text-align: center; align-items: center"
+              >
+                <div id="the_graph">
+                  <div class="spinner-border" role="status">
+                    <span class="sr-only">Graph Area</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-body">
+                  <div id="the_popup">
+                    Hover at the graph point to see information here
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div
+                class="card"
+                style="height: 100%; align-items: center; text-align: center"
+              >
+                <div class="card-body">
+                  <div id="legend" style="overflow-y: scroll; height: 600px">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">Legend Area</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    //#region declaration
+
+    // Add/Modify the options for X and Y here
+    const X_AXIS_OPTIONS = ["strata", "block_depth", "channels"];
+
+    const Y_AXIS_OPTIONS = [
+      "Kernel Time (ms)",
+      "DtoH Avg (ms)",
+      "HtoD Avg (ms)",
+    ];
+
+    // Add/modify the color of the graph here
+    const COLOR_PALETTE = [
+      "#6e40aa",
+      "#963db3",
+      "#bf3caf",
+      "#e4419d",
+      "#fe4b83",
+      "#ff5e63",
+      "#ff7847",
+      "#fb9633",
+      "#e2b72f",
+      "#c6d63c",
+      "#aff05b",
+      "#7ff658",
+      "#52f667",
+      "#30ef82",
+      "#1ddfa3",
+      "#1ac7c2",
+      "#23abd8",
+      "#368ce1",
+      "#4c6edb",
+      "#6054c8",
+      "#23171b",
+      "#4a58dd",
+      "#2f9df5",
+      "#27d7c4",
+      "#4df884",
+      "#95fb51",
+      "#dedd32",
+      "#ffa423",
+      "#f65f18",
+      "#ba2208",
+      "#900c00",
+      "#ff4040",
+      "#e70b8d",
+      "#a703d5",
+      "#582afc",
+      "#1872f4",
+      "#00bfbf",
+      "#18f472",
+      "#58fc2a",
+      "#a7d503",
+      "#e78d0b",
+      "#ff4040",
+    ];
+
+    //#endregion
+
+    //#region declaration, development purpose
+    let saved_response;
+    //#endregion
+
+    //#region misc functions
+    const check_internet = new Promise((resolve, reject) => {
+      $.get("./ping", (res) => {
+        if (res) {
+          resolve();
+        } else {
+          reject(res);
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+    //#endregion
+
+    //#region data functions
+
+    //apply all parameters to designated area, required X axis and Y axis to exclude the axes from parameters
+    const getParams = (
+      saved_data,
+      X_AXIS = "strata",
+      Y_AXIS = "Kernel Time (ms)"
+    ) => {
+      //Loading Spinner
+      document.getElementById(
+        "parameter_area"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+      document.getElementById(
+        "image_size_select"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+
+      //Get parameters of the graph
+      $.post("./getdomain", { x_axis: X_AXIS, y_axis: Y_AXIS }, (response) => {
+        //Parameters setup
+        let param_keys = Object.keys(response.parameters);
+
+        //Image size will be in select instead of checkbox
+        let image_size_option = response.parameters["image_size"];
+
+        for (let i = 0; i < param_keys.length; i++) {
+          if (param_keys[i] === "image_size") {
+            param_keys.splice(i, 1);
+          }
+        }
+
+        //Everything except the image size
+        document.getElementById("parameter_area").innerHTML = "";
+
+        //RUn through every parameter except image size
+        param_keys.forEach((keys) => {
+          //Collapse button for toggle on-off
+          let front_element = `<button
+                            class="btn btn-outline-dark"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapse_${keys}"
+                            aria-expanded="false"
+                            aria-controls="collapse_${keys}"
+                          >
+                            ${keys} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+        </svg>
+                          </button>
+                          <div class="collapse" id="collapse_${keys}">
+                            <br />
+                            <div class="card card-body">`;
+
+          //Show checklist options with specific properties
+          //Actual Collapse, set of options
+          let mid_element = response.parameters[keys].map((values) => {
+            if (saved_data) {
+              if (saved_data[keys]) {
+                if (saved_data[keys].includes(values)) {
+                  //Save data found, included in filter
+                  return `<div class="row">
+                                <div class="col">
+                                  <input
+                                    type="checkbox"
+                                    id="checkbox_${keys}_${values}"
+                                    name="cb_class3"
+                                    value="${values}"
+                                    style="text-align: left; justify-content: left"
+                                    checked
+                                  />
+                                  <label for="checkbox_${keys}_${values}">${values}</label>
+                                </div>
+                              </div>`;
+                } else {
+                  //Save data found, not included in filter
+                  return `<div class="row">
+                                <div class="col">
+                                  <input
+                                    type="checkbox"
+                                    id="checkbox_${keys}_${values}"
+                                    name="cb_class3"
+                                    value="${values}"
+                                    style="text-align: left; justify-content: left"
+                                  />
+                                  <label for="checkbox_${keys}_${values}">${values}</label>
+                                </div>
+                              </div>`;
+                }
+              }
+              //Specific save data at specific key is not valid
+              else {
+                return `<div class="row">
+                                <div class="col">
+                                  <input
+                                    type="checkbox"
+                                    id="checkbox_${keys}_${values}"
+                                    name="cb_class3"
+                                    value="${values}"
+                                    style="text-align: left; justify-content: left"
+                                  checked/>
+                                  <label for="checkbox_${keys}_${values}">${values}</label>
+                                </div>
+                              </div>`;
+              }
+            }
+            //Entire save data is not valid
+            return `<div class="row">
+                                <div class="col">
+                                  <input
+                                    type="checkbox"
+                                    id="checkbox_${keys}_${values}"
+                                    name="cb_class3"
+                                    value="${values}"
+                                    style="text-align: left; justify-content: left"
+                                    checked
+                                  />
+                                  <label for="checkbox_${keys}_${values}">${values}</label>
+                                </div>
+                              </div>`;
+          });
+
+          //Close the HTML element
+          let end_element = `</div></div><br/><br/>`;
+
+          //Combine everything here
+          let combinedElement =
+            front_element + mid_element.join("") + end_element;
+
+          document.getElementById("parameter_area").innerHTML +=
+            combinedElement;
+
+          //Options for Image size
+          let image_size_option_element = image_size_option.map((option) => {
+            if (saved_data) {
+              if (saved_data.image_size == option) {
+                return `<option value="${option}" selected>${option}</option>`;
+              }
+            }
+            return `<option value="${option}">${option}</option>`;
+          });
+
+          //Apply select Image Size
+          document.getElementById(
+            "image_size_select"
+          ).innerHTML = `<label for="image_size">Image Size: </label><select class="form-select" name="image_size" id="image_size">${image_size_option_element}</select>`;
+
+          //Options for X axis
+          let x_axis_option_element = X_AXIS_OPTIONS.map((option) => {
+            if (saved_data) {
+              if (saved_data.x_axis == option) {
+                return `<option value="${option}" selected>${option}</option>`;
+              }
+            }
+            return `<option value="${option}">${option}</option>`;
+          });
+
+          //Apply select x-axis
+          document.getElementById(
+            "x_axis_select_div"
+          ).innerHTML = `<label for="x_axis_select">X-axis: </label
+                    ><select
+                      class="form-select"
+                      name="x_axis_select"
+                      id="x_axis_select"
+                    >
+                    ${x_axis_option_element}
+                    </select>`;
+
+          //Options for X axis
+          let y_axis_option_element = Y_AXIS_OPTIONS.map((option) => {
+            if (saved_data) {
+              if (saved_data.y_axis == option) {
+                return `<option value="${option}" selected>${option}</option>`;
+              }
+            }
+            return `<option value="${option}">${option}</option>`;
+          });
+
+          //Apply select x-axis
+          document.getElementById(
+            "y_axis_select_div"
+          ).innerHTML = `<label for="y_axis_select">Y-axis: </label
+                    ><select
+                      class="form-select"
+                      name="y_axis_select"
+                      id="y_axis_select"
+                    >
+                    ${y_axis_option_element}
+                    </select>`;
+        });
+      });
+    };
+
+    //Check for filters and checkboxes from the UI
+    //Return as a set of filters, or false if the data is insufficient
+    const checkConstraint = () => {
+      let filter = {}; //return data
+      let params = {}; //default
+
+      //Pull Last saved parameters to determine availability
+      if (saved_response) {
+        params = saved_response.parameters;
+      }
+
+      //Get the key list of saved params if possible
+      let param_keys = Object.keys(params);
+
+      //Image size is considered separately
+      for (let i = 0; i < param_keys.length; i++) {
+        if (param_keys[i] === "image_size") {
+          param_keys.splice(i, 1);
+        }
+      }
+
+      //Check Image Size if possible, add it to return data
+      if (document.getElementById("image_size")) {
+        filter.image_size = document.getElementById("image_size").value;
+      }
+
+      //Check x and y value, add it to return data
+      filter.x_axis = document.getElementById("x_axis_select").value;
+      filter.y_axis = document.getElementById("y_axis_select").value;
+
+      console.log(filter);
+
+      //Remove X-axis consideration
+      for (let i = 0; i < param_keys.length; i++) {
+        if (param_keys[i] == filter.x_axis) {
+          param_keys.splice(i, 1);
+        }
+      }
+
+      //Check other filters if it's checked or not
+      //Using try-catch to easily handle error when there are insufficient information on filter
+      try {
+        //Check each key one by one
+        param_keys.forEach((key) => {
+          //a boolean detecting if the filter is valid or not
+          let isAllChecked = false;
+          filter[key] = [];
+          params[key].forEach((value) => {
+            if (
+              //There is a possibility that the next line will return reading undefined, so I use try-catch
+              document.getElementById("checkbox_" + key + "_" + value).checked
+            ) {
+              //Filter values added to return data
+              filter[key].push(value);
+              isAllChecked = true;
+            }
+          });
+          if (!isAllChecked) {
+            //If not, we throw it out as an error
+            throw "Insufficient Parameter: " + key;
+          }
+        });
+      } catch (err) {
+        alert(err);
+        console.error(err);
+        return false;
+      }
+      //Return as a checklist for filter data
+      return filter;
+    };
+    //#endregion
+
+    //#region graphs and groups
+
+    //Generate graph by it's filter
+    const applyGraph = (filter = {}) => {
+      //Loading Spinner
+      document.getElementById(
+        "the_graph"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+      document.getElementById(
+        "legend"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+      //define margins and size
+      let margin = { top: 10, right: 30, bottom: 30, left: 60 };
+      let width = (860 - margin.left - margin.right) / 1.25;
+      let height = (600 - margin.top - margin.bottom) / 1.25;
+
+      //The filter has been checked earlier in the execution function below
+
+      //Read Data from flask, using POST method to define filter
+      $.post("./getalldata", filter, (response) => {
+        document.getElementById("the_graph").innerHTML = "";
+        document.getElementById("legend").innerHTML = "";
+
+        //append svg (main component) to the body of the page
+        //Define "Canvas" for drawing graph
+        let svg = d3
+          .select("#the_graph")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr(
+            "transform",
+            "translate(" + margin.left + "," + margin.top + ")"
+          );
+
+        //Lessen the parameter taken that is used to access the data
+        response = response.response;
+
+        //Save response in case the data is required
+        //The parameter is required to recheck in this case for User Experience purpose
+        saved_response = response;
+
+        //Save the image size parameter for UX purpose
+        //The image size return from flask is "Available Size" not "Selected Size"
+        if (document.getElementById("image_size")) {
+          saved_response.image_size =
+            document.getElementById("image_size").value;
+        }
+
+        //Data set that will be actually use in the graph
+        let dataset = response.elements;
+
+        for (let i = 0; i < dataset.length; i++) {
+          dataset[i].desc_dict = JSON.parse(dataset[i].desc_dict);
+          //console.log(dataset[i].desc_dict);
+        }
+
+        //Color palette in graph lines
+        let myColor = COLOR_PALETTE;
+
+        //Define X Axis size
+        let x = d3
+          .scaleLinear()
+          .domain([
+            response.x_min -
+              (response.x_min - (response.x_min + response.x_max) / 8 < 0
+                ? 0
+                : (response.x_min + response.x_max) / 8),
+            response.x_max + (response.x_min + response.x_max) / 8,
+          ])
+          .range([0, width]);
+
+        //Apply x axis
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        //Define Y axis size
+        var y = d3
+          .scaleLinear()
+          .domain([
+            response.y_min -
+              (response.y_min - (response.y_min + response.y_max) / 5 < 0
+                ? 0
+                : (response.y_min + response.y_max) / 5),
+            response.y_max + (response.y_min + response.y_max) / 5,
+          ])
+          .range([height, 0]);
+
+        //Apply y axis
+        svg.append("g").call(d3.axisLeft(y));
+
+        //Actual Graph Line Draw Here
+        console.log(dataset);
+        dataset.map((data, i) => {
+          svg
+            .append("path")
+            .datum(data.data)
+            .attr("fill", "none")
+            .attr("stroke", myColor[i])
+            .attr("stroke-width", 3)
+            .attr(
+              "d",
+              d3
+                .line()
+                //Implement Axis Here
+                .x(function (d) {
+                  return x(d[0]);
+                })
+                .y(function (d) {
+                  return y(d[1]);
+                })
+            )
+            .on("click", (d) => {
+              single_lined_graph(response, data, myColor[i]);
+            });
+
+          //Apply Graph dots with interactive mouse action
+          svg
+            .append("g")
+            .selectAll("dot")
+            .data(data.data)
+            .enter()
+            .append("circle")
+            .attr("class", "myCircle")
+            .attr("cx", function (d) {
+              return x(d[0]);
+            })
+            .attr("cy", function (d) {
+              return y(d[1]);
+            })
+            .attr("r", 8)
+            .attr("stroke", myColor[i])
+            .attr("stroke-width", 3)
+            .attr("fill", "white")
+            .on("mouseover", (d) => {
+              document.getElementById("the_popup").innerHTML =
+                "Hover at the graph point to see information here";
+            })
+            .on("mousemove", (d) => {
+              document.getElementById("the_popup").innerHTML =
+                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${myColor[i]}" class="bi bi-circle-fill" viewBox="0 0 16 16">
+  <circle cx="8" cy="8" r="8"/>
+</svg> ` +
+                data.desc +
+                "<br>" +
+                " at <b>" +
+                response.x_axis +
+                "=" +
+                d[0] +
+                ", " +
+                response.y_axis +
+                "=" +
+                d[1] +
+                "</b>";
+            })
+            .on("mouseleave", (d) => {
+              document.getElementById("the_popup").innerHTML =
+                "Hover at the graph point to see information here";
+            })
+            .on("click", (d) => {
+              single_lined_graph(response, data, myColor[i]);
+            });
+
+          //Axis Label
+          //X Axis
+          svg
+            .append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height - 6)
+            .text(response.x_axis);
+
+          //Y Axis
+          svg
+            .append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("y", 6)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text(response.y_axis);
+
+          //Graph Legend
+
+          let button_identifier =
+            parseInt(Math.random() * 100000).toString() + "_button";
+          document.getElementById(
+            "legend"
+          ).innerHTML += `<button id="${button_identifier}" style="border: none; background-color: white" onclick="single_lined_graph_index(${i},\'${myColor[i]}\')"><span style="color: ${myColor[i]}; font-size: 13px"><b>${data.desc}</b></span><br><br></button>`;
+        });
+      });
+    };
+
+    //get the filter to apply the graph by filter
+    const applyGraphFilter = () => {
+      let filter = checkConstraint();
+      if (!filter) {
+        return;
+      }
+
+      //Save the filter, enabling load saved data
+      localStorage.setItem("graph_filter", JSON.stringify(filter));
+
+      //If the code broken change back to...
+      filter.image_size = parseInt(document.getElementById("image_size").value);
+      // filter.image_size = parseInt(filter.image_size);
+      applyGraph(filter);
+      getParams(filter, filter.x_axis, filter.y_axis);
+    };
+
+    //Use this function when the page is refreshed/first load
+    const initiateGraph = () => {
+      //Get Data from local storage of the filter
+      let localParams = localStorage.getItem("graph_filter");
+
+      //If there is no local storage, generate by default value
+      if (localParams) {
+        try {
+          //Local storage save data in text, so we need to JSONify it
+          /*There is a chance that JSON.parse() return error, this either mean that the data doesn't actually exist 
+          despite the first time checking, or the save data is corrupted (which it should not be normally)
+          */
+          let filter = JSON.parse(localParams);
+          applyGraph(filter);
+          getParams(filter, filter.x_axis, filter.y_axis);
+        } catch (err) {
+          //Catch the error in case of JSON error, generate data by default
+          console.error("Cannot load data from localStorage");
+          applyGraph();
+          getParams();
+        }
+      }
+
+      //Save data not found, generate data by default
+      else {
+        applyGraph();
+        getParams();
+      }
+    };
+
+    const single_lined_graph_index = (i, color) => {
+      let parameters = saved_response;
+      let data = saved_response.elements[parseInt(i)];
+      single_lined_graph(parameters, data, color);
+    };
+
+    const revert_single_lined = () => {
+      //define margins and size
+      let margin = { top: 10, right: 30, bottom: 30, left: 60 };
+      let width = (860 - margin.left - margin.right) / 1.25;
+      let height = (600 - margin.top - margin.bottom) / 1.25;
+      document.getElementById("the_graph").innerHTML = "";
+      //Define "Canvas" for drawing graph
+      let svg = d3
+        .select("#the_graph")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      let response = saved_response;
+
+      let dataset = response.elements;
+
+      let myColor = COLOR_PALETTE;
+
+      //Define X Axis size
+      let x = d3
+        .scaleLinear()
+        .domain([
+          response.x_min -
+            (response.x_min - (response.x_min + response.x_max) / 8 < 0
+              ? 0
+              : (response.x_min + response.x_max) / 8),
+          response.x_max + (response.x_min + response.x_max) / 8,
+        ])
+        .range([0, width]);
+
+      //Apply x axis
+      svg
+        .append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      //Define Y axis size
+      var y = d3
+        .scaleLinear()
+        .domain([
+          response.y_min -
+            (response.y_min - (response.y_min + response.y_max) / 5 < 0
+              ? 0
+              : (response.y_min + response.y_max) / 5),
+          response.y_max + (response.y_min + response.y_max) / 5,
+        ])
+        .range([height, 0]);
+
+      //Apply y axis
+      svg.append("g").call(d3.axisLeft(y));
+      dataset.map((data, i) => {
+        svg
+          .append("path")
+          .datum(data.data)
+          .attr("fill", "none")
+          .attr("stroke", myColor[i])
+          .attr("stroke-width", 3)
+          .attr(
+            "d",
+            d3
+              .line()
+              //Implement Axis Here
+              .x(function (d) {
+                return x(d[0]);
+              })
+              .y(function (d) {
+                return y(d[1]);
+              })
+          );
+
+        //Apply Graph dots with interactive mouse action
+        svg
+          .append("g")
+          .selectAll("dot")
+          .data(data.data)
+          .enter()
+          .append("circle")
+          .attr("class", "myCircle")
+          .attr("cx", function (d) {
+            return x(d[0]);
+          })
+          .attr("cy", function (d) {
+            return y(d[1]);
+          })
+          .attr("r", 8)
+          .attr("stroke", myColor[i])
+          .attr("stroke-width", 3)
+          .attr("fill", "white")
+          .on("mouseover", (d) => {
+            document.getElementById("the_popup").innerHTML =
+              "Hover at the graph point to see information here";
+          })
+          .on("mousemove", (d) => {
+            document.getElementById("the_popup").innerHTML =
+              `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${myColor[i]}" class="bi bi-circle-fill" viewBox="0 0 16 16">
+    <circle cx="8" cy="8" r="8"/>
+  </svg> ` +
+              data.desc +
+              "<br>" +
+              " at <b>" +
+              response.x_axis +
+              "=" +
+              d[0] +
+              ", " +
+              response.y_axis +
+              "=" +
+              d[1] +
+              "</b>";
+          })
+          .on("mouseleave", (d) => {
+            document.getElementById("the_popup").innerHTML =
+              "Hover at the graph point to see information here";
+          });
+
+        //Axis Label
+        //X Axis
+        svg
+          .append("text")
+          .attr("class", "x label")
+          .attr("text-anchor", "end")
+          .attr("x", width)
+          .attr("y", height - 6)
+          .text(response.x_axis);
+
+        //Y Axis
+        svg
+          .append("text")
+          .attr("class", "y label")
+          .attr("text-anchor", "end")
+          .attr("y", 6)
+          .attr("dy", ".75em")
+          .attr("transform", "rotate(-90)")
+          .text(response.y_axis);
+      });
+      document.getElementById("revert_button").style.opacity = 0;
+    };
+
+    const single_lined_graph = (parameters, data, color) => {
+      //response = response.response already
+
+      //Loading Spinner
+      document.getElementById(
+        "the_graph"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+
+      //define margins and size
+      let margin = { top: 10, right: 30, bottom: 30, left: 60 };
+      let width = (860 - margin.left - margin.right) / 1.25;
+      let height = (600 - margin.top - margin.bottom) / 1.25;
+
+      document.getElementById("the_graph").innerHTML = "";
+
+      let svg = d3
+        .select("#the_graph")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      let x = d3
+        .scaleLinear()
+        .domain([
+          parameters.x_min -
+            (parameters.x_min - (parameters.x_min + parameters.x_max) / 8 < 0
+              ? 0
+              : (parameters.x_min + parameters.x_max) / 8),
+          parameters.x_max + (parameters.x_min + parameters.x_max) / 8,
+        ])
+        .range([0, width]);
+
+      //Apply x axis
+      svg
+        .append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      var y = d3
+        .scaleLinear()
+        .domain([
+          parameters.y_min -
+            (parameters.y_min - (parameters.y_min + parameters.y_max) / 5 < 0
+              ? 0
+              : (parameters.y_min + parameters.y_max) / 5),
+          parameters.y_max + (parameters.y_min + parameters.y_max) / 5,
+        ])
+        .range([height, 0]);
+
+      svg.append("g").call(d3.axisLeft(y));
+
+      svg
+        .append("path")
+        .datum(data.data)
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", 3)
+        .attr(
+          "d",
+          d3
+            .line()
+            //Implement Axis Here
+            .x(function (d) {
+              return x(d[0]);
+            })
+            .y(function (d) {
+              return y(d[1]);
+            })
+        );
+
+      svg
+        .append("g")
+        .selectAll("dot")
+        .data(data.data)
+        .enter()
+        .append("circle")
+        .attr("class", "myCircle")
+        .attr("cx", function (d) {
+          return x(d[0]);
+        })
+        .attr("cy", function (d) {
+          return y(d[1]);
+        })
+        .attr("r", 8)
+        .attr("stroke", color)
+        .attr("stroke-width", 3)
+        .attr("fill", "white")
+        .on("mouseover", (d) => {
+          document.getElementById("the_popup").innerHTML =
+            "Hover at the graph point to see information here";
+        })
+        .on("mousemove", (d) => {
+          document.getElementById("the_popup").innerHTML =
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${color}" class="bi bi-circle-fill" viewBox="0 0 16 16">
+    <circle cx="8" cy="8" r="8"/>
+  </svg> ` +
+            data.desc +
+            "<br>" +
+            " at <b>" +
+            parameters.x_axis +
+            "=" +
+            d[0] +
+            ", " +
+            parameters.y_axis +
+            "=" +
+            d[1] +
+            "</b>";
+        })
+        .on("mouseleave", (d) => {
+          document.getElementById("the_popup").innerHTML =
+            "Hover at the graph point to see information here";
+        });
+
+      svg
+        .append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "end")
+        .attr("x", width)
+        .attr("y", height - 6)
+        .text(parameters.x_axis);
+
+      svg
+        .append("text")
+        .attr("class", "y label")
+        .attr("text-anchor", "end")
+        .attr("y", 6)
+        .attr("dy", ".75em")
+        .attr("transform", "rotate(-90)")
+        .text(parameters.y_axis);
+
+      document.getElementById("revert_button").style.opacity = 1;
+    };
+    //#endregion
+
+    //#region debugging stuff
+
+    //#endregion
+
+    //#region Execution Area
+    //Run with the runtime, like how C run it's main function
+    $(document).ready(() => {
+      check_internet
+        .then((res) => {
+          document.getElementById("internet_cover").style.display = "block";
+          initiateGraph();
+        })
+        .catch((err) => {
+          document.getElementById("internet_cover").innerHTML =
+            "<h1>Problem connecting to server, please try again</h1><br>" + err;
+          console.log(err);
+          console.error(err);
+        });
+    });
+  </script>
+</html>
