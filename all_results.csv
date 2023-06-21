@@ -1,4 +1,4 @@
-channels,hardware,backend,block_depth,strata,image_size,HtoD Avg (ms),DtoH Avg (ms),Kernel Time (ms)
+channels,hardware,backend,block_depth,stratas,image_size,HtoD Avg (ms),DtoH Avg (ms),Kernel Time (ms)
 1,a4000,cuda,2,2,256,0.01,0.02,21.37
 1,a4000,cuda,2,2,512,0.01,0.08,39.16
 1,a4000,cuda,2,2,1024,0.01,0.41,111.96

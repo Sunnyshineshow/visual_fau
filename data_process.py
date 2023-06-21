@@ -35,15 +35,17 @@ def getMetaParam(X_AXIS, Y_AXIS):
 
 def selectData(select_options):
     preset_options = {
-        "x_axis": "strata",
+        "x_axis": "stratas",
         "y_axis": "Kernel Time (ms)",
         "channels": [],
         "hardware": [],
         "backend": [],
         "block_depth": [],
-        "image_size": 256,
-        "strata": [],
+        "image_size": 1440,
+        "stratas": [],
     }
+
+    integer_list = ["channels","block_depth","stratas"]
 
     for key in select_options:
         preset_options[key] = select_options[key]
@@ -51,20 +53,11 @@ def selectData(select_options):
     select_options = preset_options
 
     # What filter should be integer?
-    tmp = []
-    for i in select_options["channels"]:
-        tmp.append(int(i))
-    select_options["channels"] = tmp
-
-    tmp = []
-    for i in select_options["block_depth"]:
-        tmp.append(int(i))
-    select_options["block_depth"] = tmp
-
-    tmp = []
-    for i in select_options["strata"]:
-        tmp.append(int(i))
-    select_options["strata"] = tmp
+    for i in integer_list:
+        tmp = []
+        for j in select_options[i]:
+            tmp.append(int(j))
+        select_options[i] = tmp
 
     parameters = dict()
 
@@ -116,38 +109,37 @@ def selectData(select_options):
     # print("Array Size:", len(divide_sandbox))
 
     table_set = []
-    # Filter Here, Need to be more dynamic
+    # Filter Here
     for datablock in divide_sandbox:
         # print(datablock["channels"].iloc[0])
         condition_satisfy = True
-        if (
-            len(select_options["channels"]) != 0
-            and select_options["x_axis"] != "channels"
-        ):
-            if datablock["channels"].iloc[0] not in select_options["channels"]:
-                condition_satisfy = False
+        for p in PARAMETER_LIST:
+            if (len(select_options[p]) != 0) and select_options["x_axis"] != p:
+                if (datablock[p]).iloc[0] not in select_options[p]:
+                    condition_satisfy = False
 
-        if (
-            len(select_options["hardware"]) != 0
-            and select_options["x_axis"] != "hardware"
-        ):
-            if datablock["hardware"].iloc[0] not in select_options["hardware"]:
-                condition_satisfy = False
-        if (
-            len(select_options["backend"]) != 0
-            and select_options["x_axis"] != "backend"
-        ):
-            if datablock["backend"].iloc[0] not in select_options["backend"]:
-                condition_satisfy = False
-        if (
-            len(select_options["block_depth"]) != 0
-            and select_options["x_axis"] != "block_depth"
-        ):
-            if datablock["block_depth"].iloc[0] not in select_options["block_depth"]:
-                condition_satisfy = False
-        if len(select_options["strata"]) != 0 and select_options["x_axis"] != "strata":
-            if datablock["strata"].iloc[0] not in select_options["strata"]:
-                condition_satisfy = False
+        # Old codes
+        # if (
+        #     len(select_options["hardware"]) != 0
+        #     and select_options["x_axis"] != "hardware"
+        # ):
+        #     if datablock["hardware"].iloc[0] not in select_options["hardware"]:
+        #         condition_satisfy = False
+        # if (
+        #     len(select_options["backend"]) != 0
+        #     and select_options["x_axis"] != "backend"
+        # ):
+        #     if datablock["backend"].iloc[0] not in select_options["backend"]:
+        #         condition_satisfy = False
+        # if (
+        #     len(select_options["block_depth"]) != 0
+        #     and select_options["x_axis"] != "block_depth"
+        # ):
+        #     if datablock["block_depth"].iloc[0] not in select_options["block_depth"]:
+        #         condition_satisfy = False
+        # if len(select_options["stratas"]) != 0 and select_options["x_axis"] != "stratas":
+        #     if datablock["stratas"].iloc[0] not in select_options["stratas"]:
+        #         condition_satisfy = False
         if condition_satisfy:
             table_set.append(datablock)
 

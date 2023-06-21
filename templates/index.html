@@ -197,7 +197,7 @@
     //#region declaration
 
     // Add/Modify the options for X and Y here
-    const X_AXIS_OPTIONS = ["strata", "block_depth", "channels"];
+    const X_AXIS_OPTIONS = ["stratas", "block_depth", "channels"];
 
     const Y_AXIS_OPTIONS = [
       "Kernel Time (ms)",
@@ -276,7 +276,7 @@
     //apply all parameters to designated area, required X axis and Y axis to exclude the axes from parameters
     const getParams = (
       saved_data,
-      X_AXIS = "strata",
+      X_AXIS = "stratas",
       Y_AXIS = "Kernel Time (ms)"
     ) => {
       //Loading Spinner
@@ -638,7 +638,6 @@
         svg.append("g").call(d3.axisLeft(y));
 
         //Actual Graph Line Draw Here
-        console.log(dataset);
         dataset.map((data, i) => {
           svg
             .append("path")
