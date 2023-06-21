@@ -64,4 +64,4 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     APP.debug = True
-    APP.run(port=8080)
+    APP.run(port=8080,host='0.0.0.0')
