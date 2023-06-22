@@ -189,6 +189,28 @@
               </div>
             </div>
           </div>
+          <br />
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12">
+                  <button
+                    id="run_cnn"
+                    class="btn btn-primary"
+                    onclick="run_threads()"
+                    disabled
+                  >
+                    Click to run
+                  </button>
+                  <div id="status_cnn">
+                    <div class="spinner-grow" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -269,6 +291,13 @@
         reject(err);
       });
     });
+
+    const run_threads = () => {
+      $.get("./test_thread", (res) => {
+        document.getElementById("status_cnn").innerHTML = res;
+        document.getElementById("run_cnn").disabled = true;
+      });
+    };
     //#endregion
 
     //#region data functions
@@ -1089,5 +1118,21 @@
           console.error(err);
         });
     });
+
+    setInterval(() => {
+      $.get("track_status", (res) => {
+        let status = parseInt(res);
+        if (status == 0) {
+          document.getElementById("run_cnn").disabled = false;
+          document.getElementById("status_cnn").innerHTML = "Ready";
+        } else if (status == 1) {
+          document.getElementById("run_cnn").disabled = true;
+          document.getElementById("status_cnn").innerHTML = "Running";
+        } else {
+          document.getElementById("run_cnn").disabled = true;
+          document.getElementById("status_cnn").innerHTML = "Not Ready";
+        }
+      });
+    }, 500);
   </script>
 </html>
