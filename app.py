@@ -24,7 +24,7 @@ def test_delay():
     delay()
     print("I finished running!")
     process_status.value = 0
-    os.kill(os.getpid(),signal.SIGTERM)
+    #os.kill(os.getpid(),signal.SIGTERM)
 
 process_status = Value('i')
 process_status.value = 0
@@ -63,7 +63,6 @@ def getalldata():
 @APP.route("/test_thread")
 def test_thread():
     p = Process(target=test_delay)
-    p.daemon = True
     p.start()
     process_status.value = 1
     return "Process Started"

@@ -1,11 +1,10 @@
 import pandas as pd
 import numpy as np
 
+df = pd.read_csv('./all_results2.csv')
 
 def getMetaParam(X_AXIS, Y_AXIS):
     parameters = dict()
-
-    df = pd.read_csv("./all_results.csv")
 
     PARAMETER_LIST = df.columns.values.tolist()
     PARAMETER_LIST.remove(X_AXIS)
@@ -60,8 +59,6 @@ def selectData(select_options):
         select_options[i] = tmp
 
     parameters = dict()
-
-    df = pd.read_csv("./all_results.csv")
 
     PARAMETER_LIST = df.columns.values.tolist()
     PARAMETER_LIST.remove(select_options["x_axis"])
