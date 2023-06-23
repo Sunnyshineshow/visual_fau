@@ -67,6 +67,15 @@
                     </div>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card-body">
+                      <div id="file_select_div" onchange="changeFile()">
+                        File Select Here
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <br />
               <div class="card">
@@ -301,13 +310,47 @@
     //#endregion
 
     //#region data functions
+    const changeFile = () => {
+      let file_name = document.getElementById("file_select").value;
+      let reset_param = { file_name: file_name };
+      localStorage.clear("graph_filter");
+      applyGraph(reset_param);
+      getParams(reset_param);
+
+      localStorage.setItem("graph_file", file_name);
+
+      getFileListParam(file_name);
+    };
+    const getFileListParam = (saved_file) => {
+      document.getElementById(
+        "file_select_div"
+      ).innerHTML = `<div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>`;
+      $.get("./get_file_list", (res) => {
+        let tmp;
+        if (saved_file) {
+          tmp = res.response.map((file) => {
+            if (saved_file == file) {
+              return `<option value="${file}" selected>${file}</option>`;
+            } else {
+              return `<option value="${file}">${file}</option>`;
+            }
+          });
+        } else {
+          tmp = res.response.map((file) => {
+            return `<option value="${file}">${file}</option>`;
+          });
+        }
+        document.getElementById("file_select_div").innerHTML =
+          `<label for="file_select">Files: </label><select id="file_select" class="form-select">` +
+          tmp.join("") +
+          `</select>`;
+      });
+    };
 
     //apply all parameters to designated area, required X axis and Y axis to exclude the axes from parameters
-    const getParams = (
-      saved_data,
-      X_AXIS = "stratas",
-      Y_AXIS = "Kernel Time (ms)"
-    ) => {
+    const getParams = (saved_data) => {
       //Loading Spinner
       document.getElementById(
         "parameter_area"
@@ -321,7 +364,7 @@
     </div>`;
 
       //Get parameters of the graph
-      $.post("./getdomain", { x_axis: X_AXIS, y_axis: Y_AXIS }, (response) => {
+      $.post("./getdomain", saved_data, (response) => {
         //Parameters setup
         let param_keys = Object.keys(response.parameters);
 
@@ -521,6 +564,14 @@
       if (document.getElementById("image_size")) {
         filter.image_size = document.getElementById("image_size").value;
       }
+
+      if (!document.getElementById("file_select")) {
+        // alert("File not yet specified");
+        // return;
+        filter.file_name = "all_results.csv";
+      }
+
+      //filter.file_name = document.getElementById("file_select").value;
 
       //Check x and y value, add it to return data
       filter.x_axis = document.getElementById("x_axis_select").value;
@@ -782,13 +833,15 @@
       filter.image_size = parseInt(document.getElementById("image_size").value);
       // filter.image_size = parseInt(filter.image_size);
       applyGraph(filter);
-      getParams(filter, filter.x_axis, filter.y_axis);
+      getParams(filter);
+      // getFileListParam();
     };
 
     //Use this function when the page is refreshed/first load
     const initiateGraph = () => {
       //Get Data from local storage of the filter
       let localParams = localStorage.getItem("graph_filter");
+      let graph_file = localStorage.getItem("graph_file");
 
       //If there is no local storage, generate by default value
       if (localParams) {
@@ -799,7 +852,7 @@
           */
           let filter = JSON.parse(localParams);
           applyGraph(filter);
-          getParams(filter, filter.x_axis, filter.y_axis);
+          getParams(filter);
         } catch (err) {
           //Catch the error in case of JSON error, generate data by default
           console.error("Cannot load data from localStorage");
@@ -810,8 +863,20 @@
 
       //Save data not found, generate data by default
       else {
-        applyGraph();
-        getParams();
+        if (graph_file) {
+          applyGraph({ file_name: graph_file });
+          getParams({ file_name: graph_file });
+          getFileListParam(graph_file);
+        } else {
+          applyGraph();
+          getParams();
+          getFileListParam();
+        }
+      }
+      if (graph_file) {
+        getFileListParam(graph_file);
+      } else {
+        getFileListParam();
       }
     };
 
@@ -936,6 +1001,9 @@
           .on("mouseleave", (d) => {
             document.getElementById("the_popup").innerHTML =
               "Hover at the graph point to see information here";
+          })
+          .on("click", (d) => {
+            single_lined_graph(response, data, myColor[i]);
           });
 
         //Axis Label
@@ -1119,7 +1187,22 @@
         });
     });
 
-    setInterval(() => {
+    // setInterval(() => {
+    //   $.get("track_status", (res) => {
+    //     let status = parseInt(res);
+    //     if (status == 0) {
+    //       document.getElementById("run_cnn").disabled = false;
+    //       document.getElementById("status_cnn").innerHTML = "Ready";
+    //     } else if (status == 1) {
+    //       document.getElementById("run_cnn").disabled = true;
+    //       document.getElementById("status_cnn").innerHTML = "Running";
+    //     } else {
+    //       document.getElementById("run_cnn").disabled = true;
+    //       document.getElementById("status_cnn").innerHTML = "Not Ready";
+    //     }
+    //   });
+    // }, 500);
+    setTimeout(() => {
       $.get("track_status", (res) => {
         let status = parseInt(res);
         if (status == 0) {

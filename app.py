@@ -1,5 +1,5 @@
 # Before execution, do --> source /scratch-local/testenv/env/bin/activate
-from data_process import selectData, getMetaParam
+from data_process import selectData, getMetaParam, getFileList
 from delay import delay
 
 import sys
@@ -35,7 +35,17 @@ CORS(APP)
 @APP.route("/getdomain", methods=["POST"])
 def getdomain():
     req = flask.request.form.to_dict()
-    return flask.jsonify(parameters=getMetaParam(req["x_axis"], req["y_axis"]))
+    try:
+        filename = req["file_name"]
+    except:
+        filename = "all_results.csv"
+    
+    try:
+        response = getMetaParam(req["x_axis"], req["y_axis"], filename)
+    # Default
+    except KeyError:
+        response = getMetaParam("stratas", "Kernel Time (ms)", filename)
+    return flask.jsonify(parameters=response)
 
 
 @APP.route("/getalldata", methods=["POST", "GET"])
@@ -44,6 +54,10 @@ def getalldata():
         req = flask.request.form.to_dict()
         old_keylist = req.keys()
         new_dict = dict()
+        try:
+            filename = req["file_name"]
+        except:
+            filename = "all_results.csv"
         # TODO remove the "[]" in some element and put it into new one
         for old_key in old_keylist:
             tmp = req[old_key]
@@ -54,10 +68,10 @@ def getalldata():
                 new_key = old_key[:-2]
 
             new_dict[new_key] = tmp
-        retVal = selectData(new_dict)
+        retVal = selectData(new_dict,FILENAME=filename)
         return flask.jsonify(response=retVal)
     else:
-        retVal = selectData({})
+        retVal = selectData({},FILENAME=filename)
         return flask.jsonify(response=retVal)
 
 @APP.route("/test_thread")
@@ -70,6 +84,10 @@ def test_thread():
 @APP.route("/track_status")
 def track_status():
     return str(process_status.value)
+
+@APP.route("/get_file_list")
+def get_file_list():
+    return flask.jsonify(response=getFileList())
 
 @APP.route("/ping")
 def ping():

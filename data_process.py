@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
+import os
 
-df = pd.read_csv('./all_results2.csv')
-
-def getMetaParam(X_AXIS, Y_AXIS):
+def getMetaParam(X_AXIS, Y_AXIS, FILENAME):
     parameters = dict()
+
+    df = pd.read_csv('./csv/' + FILENAME)
+    print("METAPARAM FILE:",FILENAME)
 
     PARAMETER_LIST = df.columns.values.tolist()
     PARAMETER_LIST.remove(X_AXIS)
@@ -32,7 +34,7 @@ def getMetaParam(X_AXIS, Y_AXIS):
     return parameters
 
 
-def selectData(select_options):
+def selectData(select_options, FILENAME):
     preset_options = {
         "x_axis": "stratas",
         "y_axis": "Kernel Time (ms)",
@@ -43,6 +45,10 @@ def selectData(select_options):
         "image_size": 1440,
         "stratas": [],
     }
+
+    print("GRAPH FILE:",FILENAME)
+
+    df = pd.read_csv('./csv/' + FILENAME)
 
     integer_list = ["channels","block_depth","stratas"]
 
@@ -204,3 +210,9 @@ def selectData(select_options):
         "parameters": parameters,
     }
     return retVal
+
+def getFileList():
+    return os.listdir("./csv")
+
+if __name__ == "__main__":
+    print(getFileList())
